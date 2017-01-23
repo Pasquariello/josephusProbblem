@@ -1,0 +1,75 @@
+html body {
+    background: url(../img/ground.png);
+}
+
+.bg {
+    margin-top: 25px;
+    text-align: center;
+    padding: 10px;
+}
+
+.bgOpacity {
+    border: solid 2px #FCCA46;
+    background-color: rgba(35, 61, 77, 0.7);
+}
+
+.bgNoOpacity {
+    border: solid 2px #FCCA46;
+    background-color: rgba(35, 61, 77, 1);
+}
+
+canvas {
+    position: absolute;
+    z-index: 1;
+    margin: auto;
+}
+
+#warrior {
+    max-width: 50px;
+    max-height: 50px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+.left {
+    position: absolute;
+    left: 0;
+    min-height: 950px;
+    -webkit-box-shadow: 10px 3px 22px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 10px 3px 22px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 10px 3px 22px 0px rgba(0, 0, 0, 0.75);
+}
+
+.right {
+    position: absolute;
+    right: 0;
+    min-height: 950px;
+    -webkit-box-shadow: -16px 3px 22px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: -16px 3px 22px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: -16px 3px 22px 0px rgba(0, 0, 0, 0.75);
+}
+
+.walls {
+    z-index: -1;
+    width: 150px;
+    height: 100%;
+    background: url(../img/stoneWall.jpeg) repeat center center;
+}
+
+.center {
+    position: absolute;
+    text-align: center;
+}
+
+.star {
+    color: white;
+}
+
+p {
+    color: white;
+}
+
+h1 {
+    color: darkgoldenrod;
+}

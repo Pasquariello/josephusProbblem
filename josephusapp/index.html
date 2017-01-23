@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <title>Army Game</title>
+
+    <!--  -->
+
+    <style>
+        #containingDiv {
+            overflow: hidden;
+        }
+        
+        #myCanvas {
+            /*
+  position: absolute; 
+  top: 0px;
+  left: 0px;
+*/
+        }
+        
+        p,
+        .numbering {
+            padding: 20px;
+        }
+        
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <div class="container">
+        <div class="row">
+            <div id="play">
+                <div class="bg bgNoOpacity col-sm-12">
+                    <h1>The Josephus Problem</h1>
+                    <p>You and your army are cornered by the Romans with no chance of escape! It has been decided that it is better to die by the sword of your brothers in arms than it is to be captured by the Romans, the rest of the troops have come up with a system to accomplish this. They all decide that everyone will sit in a circle and be numerically labelled, starting off with someone in position "1". The person in position "1" will kill the first person sitting to their left. Next, the first person sitting to left (position "3" since "2" was killed) will kill the next person in the rotation, and so on until there is only one person left standing. This person will have to Sacrifice themselves to preserve the honor of the rest of the army!</p>
+                    <br/>
+                    <p>But wait! you are a Roman sympathizer, you would rather be captured than killed! It is up to you to figure out where to sit in the circle so you are always the last person standing!</p>
+                    <br/>
+                    <p>Declare the size of your army below and see if you can figure out where to sit to be the last one standing!</p>
+                    <button onclick="startGame()">play</button>
+                    <br/>
+                    <br/>
+                    <p>Hint: There's and equation ... you'll just have to do some light reading and learn about the "Josephus Problem"</p>
+                    <a href="https://en.wikipedia.org/wiki/Josephus_problem">Lean More</a>
+                </div>
+
+            </div>
+        </div>
+        <!--
+        <div class="bg bgOpacity" id="text">
+            <p style="color: white"> enter size of army</p>
+            <input id="numSoldiers" type="number" />
+            <button onclick="plotPoint()">submit</button>
+
+
+
+            <div id="userInput">
+
+            </div>
+        </div>
+-->
+        <div class="row">
+
+            <div id="show" class="center col-sm-12">
+                <canvas id="myCanvas" width="900" height="700"></canvas>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <script>
+        //function circle (a){      
+
+
+        var canvas = document.getElementById('myCanvas');
+        var context = canvas.getContext('2d');
+        var centerX = window.innerWidth / 2;
+        //        var centerX = canvas.width / 2;
+        var centerY = canvas.height / 2;
+
+
+        var coordinates = [];
+        var xArray = [];
+        var yArray = [];
+        var myArray = [];
+        var winner = [];
+        var userChoice = [];
+
+
+
+
+        function startGame() {
+
+
+
+
+            var text = '';
+
+            text += ' <div class="bg bgOpacity" id="text">';
+            text += '  <p style="color: white">Enter size of army</p>';
+            text += '  <p style="color: white">*please choose between 2 and 50 max</p>';
+            text += ' <input id="numSoldiers" type="number" />';
+            text += ' <button onclick="plotPoint()">submit</button>';
+
+
+
+            text += ' <div id="userInput">';
+
+            text += '  </div>';
+            text += ' </div>';
+
+            document.getElementById('play').innerHTML = text;
+        }
+
+
+
+        function plotPoint() {
+
+            var totalPoints = document.getElementById('numSoldiers').value;
+
+            winner.push(josephus(totalPoints));
+
+
+
+
+            var radius = 200;
+            if (totalPoints > 35) {
+                radius = 300;
+            }
+
+            if (window.innerWidth < 500) {
+                radius = 100;
+
+            }
+
+
+
+            for (var i = 1; i <= totalPoints; i++) {
+                drawPoint(radius, i, totalPoints);
+            }
+
+            createUserView();
+
+        }
+
+
+        var newDiv = '';
+
+        function drawPoint(radius, currentPoint, totalPoints) {
+
+            var theta = ((Math.PI * 2) / totalPoints);
+            var angle = (theta * currentPoint);
+
+
+            x = centerX + radius * Math.cos(angle);
+            y = centerY + radius * Math.sin(angle);
+
+            xArray.push(x);
+            yArray.push(y);
+            createArmy();
+        }
+
+        function createArmy() {
+            //needs to be outside of the loop so it doesnt override and olnly show last star
+            for (var i = 0; i < xArray.length; i++) {
+                //' + (i + 1) + '
+                newDiv += '<div class="star" id="s_' + i + '" style="top:' + yArray[i] + 'px; left:' + xArray[i] + 'px; position: absolute;">';
+
+                newDiv += '<img class="center" id="warrior" src="img/warrior.png"/>';
+                newDiv += '</div>';
+
+                newDiv += '<div class="star" id="n_' + i + '" style="top:' + yArray[i] + 'px; left:' + xArray[i] + 'px; position: absolute;">';
+                newDiv += '<p class="numbering">' + (i + 1) + '</p>';
+
+                newDiv += '</div>';
+
+
+
+            }
+
+
+
+            document.getElementById('show').innerHTML = newDiv;
+            //    console.log(newDiv);
+
+        }
+
+
+        function josephus(x) {
+            if (x == 1)
+
+                return 1;
+            else
+            /* The position returned by josephus(n - 1, k) is adjusted because the
+               recursive call josephus(n - 1, k) considers the original position 
+               k%n + 1 as position 1 */
+                return (josephus(x - 1) + 2 - 1) % x + 1;
+
+        }
+
+
+
+        function checkWin() {
+            uChoice = document.getElementById('user').value;
+            userChoice.push(uChoice);
+            console.log(winner[0])
+            var textWinner = '';
+            var textLoser = '';
+            if (userChoice[0] == winner[0]) {
+                console.log('win');
+                textWinner += '<h3 style="color:#00cc00" >You Chose Wisely!</h3>';
+                textWinner += '<button onclick="reset()">Play Again!?</button>'
+                document.getElementById('text').innerHTML = textWinner;
+
+            } else {
+
+                textLoser += '<h3 style="color:red">You Chose Poorly!</h3>';
+                textLoser += '<p>The winning position was ' + winner[0] + '</p>';
+                textLoser += '<button onclick="reset()">Play Again!?</button>'
+                document.getElementById('text').innerHTML = textLoser;
+            }
+
+
+        }
+
+        function createUserView() {
+            var text = '';
+
+
+            text += '<p style="color: white"> enter survivor position</p>';
+            text += ' <input id="user" type="number"/><button onclick="checkWin()">submit</button>';
+
+            document.getElementById('userInput').innerHTML = text;
+        }
+
+
+        function reset() {
+            location.reload();
+        }
+    </script>
+
+</body>
+
+</html>
